@@ -1,0 +1,103 @@
+name: CI - Build + LHCI + Budget Gate
+on: [push, pull_request]
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: './seo-portfolio/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./seo-portfolio
+
+      - name: Build Astro site
+        run: npm run build
+        working-directory: ./seo-portfolio
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --port 4321 &
+          sleep 5
+        working-directory: ./seo-portfolio
+
+      - name: Run Lighthouse CI
+        run: |
+          npx @lhci/cli@0.13.x autorun \
+            --collect.url=http://localhost:4321 \
+            --collect.url=http://localhost:4321/blog \
+            --collect.url=http://localhost:4321/blog/ai-mvp-builder-vs-no-code \
+            --collect.url=http://localhost:4321/social-hub \
+            --upload.target=filesystem \
+            --upload.outputDir=./lhci-reports
+        working-directory: ./seo-portfolio
+
+      - name: Enforce Performance Budgets
+        run: |
+          echo "🔍 Checking performance budgets..."
+          node -e "
+            const budget = require('../perf-budget.json');
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find the latest LHCI report
+            const lhciDir = './lhci-reports';
+            const files = fs.readdirSync(lhciDir).filter(f => f.endsWith('.json') && !f.includes('manifest'));
+            if (files.length === 0) {
+              console.error('❌ No LHCI reports found');
+              process.exit(1);
+            }
+            
+            const latestReport = files.sort().pop();
+            const reportPath = path.join(lhciDir, latestReport);
+            const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+            
+            const audits = report.audits;
+            const lcp = audits['largest-contentful-paint']?.numericValue || 0;
+            const cls = audits['cumulative-layout-shift']?.numericValue || 0;
+            const inp = audits['interactive']?.numericValue || audits['total-blocking-time']?.numericValue || 0;
+            const fcp = audits['first-contentful-paint']?.numericValue || 0;
+            const si = audits['speed-index']?.numericValue || 0;
+            const tti = audits['interactive']?.numericValue || 0;
+            
+            console.log('📊 Performance Metrics:');
+            console.log('  LCP:', lcp.toFixed(0), 'ms (budget:', budget.lcp, 'ms)');
+            console.log('  CLS:', cls.toFixed(3), '(budget:', budget.cls, ')');
+            console.log('  INP:', inp.toFixed(0), 'ms (budget:', budget.inp, 'ms)');
+            console.log('  FCP:', fcp.toFixed(0), 'ms (budget:', budget.fcp, 'ms)');
+            console.log('  SI:', si.toFixed(0), 'ms (budget:', budget.si, 'ms)');
+            console.log('  TTI:', tti.toFixed(0), 'ms (budget:', budget.tti, 'ms)');
+            
+            const failures = [];
+            if (lcp > budget.lcp) failures.push(\`LCP: \${lcp.toFixed(0)}ms > \${budget.lcp}ms\`);
+            if (cls > budget.cls) failures.push(\`CLS: \${cls.toFixed(3)} > \${budget.cls}\`);
+            if (inp > budget.inp) failures.push(\`INP: \${inp.toFixed(0)}ms > \${budget.inp}ms\`);
+            if (fcp > budget.fcp) failures.push(\`FCP: \${fcp.toFixed(0)}ms > \${budget.fcp}ms\`);
+            if (si > budget.si) failures.push(\`SI: \${si.toFixed(0)}ms > \${budget.si}ms\`);
+            if (tti > budget.tti) failures.push(\`TTI: \${tti.toFixed(0)}ms > \${budget.tti}ms\`);
+            
+            if (failures.length > 0) {
+              console.error('❌ Budget violations:');
+              failures.forEach(f => console.error('  -', f));
+              process.exit(1);
+            } else {
+              console.log('✅ All performance budgets met!');
+            }
+          "
+        working-directory: ./seo-portfolio
+
+      - name: Upload LHCI reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: ./seo-portfolio/lhci-reports/
+          retention-days: 7

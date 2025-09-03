@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# Cursor Auto – Working Agreement
+
+PRIORITIES (in order):
+1) Don't regress Lighthouse, A11y, SEO. If a change risks this, propose an alternative.
+2) Follow /RULES.md and /prompts/system.mdc at all times.
+3) Make minimal diffs. Prefer unified patches over large rewrites.
+
+ALLOWED FILES:
+- /seo-portfolio/** for Astro site
+- /03_cornerstones/** and /04_longtails/** content
+- /silo_plan.csv, /site_outline.md, /link_map.csv
+- /scripts/check-performance.sh, /perf-budget.json
+- /prompts/** and /.cursor/**
+
+AVOID:
+- Introducing external font CDNs without font-display: swap.
+- Removing JSON-LD, canonical, OG/Twitter tags.
+- Adding heavy client JS without showing the CLS/INP impact.
+
+PATCH POLICY:
+- Show a PLAN (3 bullets) → DIFF (unified) → VERIFY (commands + pages to click + what to inspect).
+- Keep each change < 200 lines unless explicitly asked.
+
+FAIL SAFE:
+- If a patch touches files outside the allowed list, abort and ask for confirmation.

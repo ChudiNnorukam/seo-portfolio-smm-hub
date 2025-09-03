@@ -1,0 +1,33 @@
+---
+alwaysApply: true
+---
+
+# Task 01 – Seed content and routes
+
+Inputs: 03_cornerstones, 04_longtails, link_map.csv  
+Output: Routed content in /seo-portfolio/src/content/blog, HTML sitemap updated, no orphan links.
+
+Acceptance:
+- All posts accessible under /blog/:slug
+- "Further reading" matches link_map.csv
+- No broken internal links
+- Build passes; scripts/check-performance.sh runs
+
+Do:
+- Add Astro collection config if needed
+- Preserve frontmatter fields; preserve canonical and JSON-LD
+- Keep diffs minimal; show 3 full sample posts in diff# Task 01 – Seed content and routes
+
+Inputs: 03_cornerstones, 04_longtails, link_map.csv  
+Output: Routed content in /seo-portfolio/src/content/blog, HTML sitemap updated, no orphan links.
+
+Acceptance:
+- All posts accessible under /blog/:slug
+- "Further reading" matches link_map.csv
+- No broken internal links
+- Build passes; scripts/check-performance.sh runs
+
+Do:
+- Add Astro collection config if needed
+- Preserve frontmatter fields; preserve canonical and JSON-LD
+- Keep diffs minimal; show 3 full sample posts in diff

@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+# Task 03 – A11y pass
+
+Use /prompts/a11y-checklist.mdc.  
+Aria for nav, breadcrumbs, cards. Focus styles visibly clear. Contrast ≥ 4.5:1.
+
+Acceptance:
+- Lighthouse Accessibility = 100 for tested pages
+- No landmark or label errors in basic aXe checks
+- Changes limited to header, breadcrumbs, cards, and minor CSS for focus styles# Task 03 – A11y pass
+
+Use /prompts/a11y-checklist.mdc.  
+Aria for nav, breadcrumbs, cards. Focus styles visibly clear. Contrast ≥ 4.5:1.
+
+Acceptance:
+- Lighthouse Accessibility = 100 for tested pages
+- No landmark or label errors in basic aXe checks
+- Changes limited to header, breadcrumbs, cards, and minor CSS for focus styles

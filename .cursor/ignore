@@ -1,0 +1,6 @@
+# Don't open or modify these by default
+**/node_modules/**
+**/.git/**
+**/dist/**
+**/*.map
+**/*.lock

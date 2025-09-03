@@ -1,0 +1,33 @@
+---
+alwaysApply: true
+---
+
+# Cursor Auto Plan
+
+Goal: Integrate content, interlink, pass A11y, and hit Lighthouse 100/100.
+
+Milestones:
+1) Content import & routing
+2) Interlinking & sitemap
+3) A11y pass
+4) Perf hardening
+
+For each milestone:
+- PLAN (3 bullets)
+- DIFF (unified)
+- VERIFY (commands + URLs + what to check)
+- If budgets exceeded (perf-budget.json): propose minimal patch and rerun VERIFY# Cursor Auto Plan
+
+Goal: Integrate content, interlink, pass A11y, and hit Lighthouse 100/100.
+
+Milestones:
+1) Content import & routing
+2) Interlinking & sitemap
+3) A11y pass
+4) Perf hardening
+
+For each milestone:
+- PLAN (3 bullets)
+- DIFF (unified)
+- VERIFY (commands + URLs + what to check)
+- If budgets exceeded (perf-budget.json): propose minimal patch and rerun VERIFY

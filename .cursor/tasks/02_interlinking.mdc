@@ -1,0 +1,23 @@
+---
+alwaysApply: true
+---
+
+# Task 02 – Interlinking & sitemap
+
+Inputs: link_map.csv, site_outline.md  
+Output: Add 2 deep links to cornerstones + 2 sibling cross-links in each post.
+Also regenerate /sitemap.html and /sitemap.xml entries.
+
+Acceptance:
+- 0 orphans
+- HTML sitemap reflects all slugs
+- Show sample of 3 updated posts in full; other changes summarized# Task 02 – Interlinking & sitemap
+
+Inputs: link_map.csv, site_outline.md  
+Output: Add 2 deep links to cornerstones + 2 sibling cross-links in each post.
+Also regenerate /sitemap.html and /sitemap.xml entries.
+
+Acceptance:
+- 0 orphans
+- HTML sitemap reflects all slugs
+- Show sample of 3 updated posts in full; other changes summarized

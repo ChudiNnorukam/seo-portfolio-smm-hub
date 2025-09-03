@@ -1,0 +1,22 @@
+{
+  "alwaysApply": true,
+  "include": [
+    "RULES.md",
+    "prompts/system.mdc",
+    "prompts/a11y-checklist.mdc",
+    "prompts/seo-style.mdc",
+    "silo_plan.csv",
+    "site_outline.md",
+    "link_map.csv",
+    "perf-budget.json",
+    "seo-portfolio/src/**/*",
+    "03_cornerstones/**/*",
+    "04_longtails/**/*"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "lighthouse-report.json"
+  ]
+}

@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+Checklist:
+- Landmarks: header/nav/main/aside/footer present and unique
+- aria-current="page" on active nav link
+- Labels: form fields, icons, controls have accessible names
+- Focus ring visible, keyboard order logical
+- Color contrast AA (4.5:1) for text
+- Alt text present and descriptive; empty alt for purely decorativeChecklist:
+- Landmarks: header/nav/main/aside/footer present and unique
+- aria-current="page" on active nav link
+- Labels: form fields, icons, controls have accessible names
+- Focus ring visible, keyboard order logical
+- Color contrast AA (4.5:1) for text
+- Alt text present and descriptive; empty alt for purely decorative

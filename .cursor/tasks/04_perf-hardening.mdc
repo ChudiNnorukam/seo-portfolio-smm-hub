@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+---
+
+# Task 04 – Perf hardening
+
+Apply: image dimensions, aspect-ratio wrappers, lazy-loading, font strategy, preloads.
+
+Acceptance:
+- Lighthouse Perf = 100
+- LCP ≤ 2.5s, CLS ≤ 0.1, INP ≤ 200ms (perf-budget.json)
+- Minimal edits; prefer aspect-ratio classes and width/height attributes# Task 04 – Perf hardening
+
+Apply: image dimensions, aspect-ratio wrappers, lazy-loading, font strategy, preloads.
+
+Acceptance:
+- Lighthouse Perf = 100
+- LCP ≤ 2.5s, CLS ≤ 0.1, INP ≤ 200ms (perf-budget.json)
+- Minimal edits; prefer aspect-ratio classes and width/height attributes
