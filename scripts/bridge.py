@@ -171,6 +171,98 @@ async def run_cmd(data: Dict[str, Any]):
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
 
+@app.post("/create_diff")
+async def create_diff(data: Dict[str, Any]):
+    """Create a diff and optionally apply it to the repository."""
+    try:
+        diff = data.get("diff")
+        message = data.get("message", "Agent diff")
+        dry_run = data.get("dry_run", False)
+        
+        if not diff:
+            raise HTTPException(status_code=400, detail="Diff content required")
+        
+        logger.info(f"Creating diff: {message} (dry_run: {dry_run})")
+        
+        if dry_run:
+            # In dry run mode, just validate the diff format
+            logger.info("Dry run mode - diff validation only")
+            return {
+                "status": "success",
+                "message": "Diff validated successfully (dry run)",
+                "diff_preview": diff[:500] + "..." if len(diff) > 500 else diff,
+                "dry_run": True
+            }
+        else:
+            # Apply the diff using git apply
+            import subprocess
+            import tempfile
+            
+            # Create a temporary file for the diff
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.patch', delete=False) as f:
+                f.write(diff)
+                patch_file = f.name
+            
+            try:
+                # Apply the patch
+                result = subprocess.run(
+                    ["git", "apply", "--check", patch_file],
+                    cwd=REPO_ROOT,
+                    capture_output=True,
+                    text=True
+                )
+                
+                if result.returncode != 0:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Invalid diff format: {result.stderr}"
+                    )
+                
+                # If check passes, apply the patch
+                result = subprocess.run(
+                    ["git", "apply", patch_file],
+                    cwd=REPO_ROOT,
+                    capture_output=True,
+                    text=True
+                )
+                
+                if result.returncode != 0:
+                    raise HTTPException(
+                        status_code=500, 
+                        detail=f"Failed to apply diff: {result.stderr}"
+                    )
+                
+                # Stage and commit the changes
+                subprocess.run(["git", "add", "-A"], cwd=REPO_ROOT, check=True)
+                subprocess.run(
+                    ["git", "commit", "-m", message], 
+                    cwd=REPO_ROOT, 
+                    check=True
+                )
+                
+                return {
+                    "status": "success",
+                    "message": f"Diff applied and committed: {message}",
+                    "dry_run": False
+                }
+                
+            finally:
+                # Clean up temporary file
+                import os
+                try:
+                    os.unlink(patch_file)
+                except:
+                    pass
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        logger.error(f"Error creating diff: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+
 @app.get("/allowed_commands")
 async def get_allowed_commands():
     """Get list of allowed commands."""
