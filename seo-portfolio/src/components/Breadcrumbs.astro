@@ -1,0 +1,79 @@
+---
+export interface Props {
+  items: Array<{
+    label: string;
+    href?: string;
+  }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb">
+  <ol>
+    {items.map((item, index) => (
+      <li>
+        {item.href ? (
+          <a href={item.href}>{item.label}</a>
+        ) : (
+          <span aria-current="page">{item.label}</span>
+        )}
+        {index < items.length - 1 && (
+          <span aria-hidden="true" class="separator">›</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  nav[aria-label="Breadcrumb"] {
+    margin-bottom: 1rem;
+  }
+  
+  nav[aria-label="Breadcrumb"] ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  
+  nav[aria-label="Breadcrumb"] li {
+    display: flex;
+    align-items: center;
+  }
+  
+  nav[aria-label="Breadcrumb"] a {
+    color: #0066cc;
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+  
+  nav[aria-label="Breadcrumb"] a:hover {
+    background-color: #f0f8ff;
+    text-decoration: underline;
+  }
+  
+  nav[aria-label="Breadcrumb"] a:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+    background-color: #f0f8ff;
+  }
+  
+  nav[aria-label="Breadcrumb"] span[aria-current="page"] {
+    color: #333;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .separator {
+    color: #666;
+    margin: 0 0.5rem;
+    font-weight: bold;
+  }
+</style>

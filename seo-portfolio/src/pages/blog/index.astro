@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Blog' }
+];
+---
+
+<BaseLayout
+  title="Blog - Chudi Nnorukam"
+  description="Latest blog posts about SEO, product development, and business growth strategies."
+>
+    <Header currentPath="/blog" />
+    
+    <main>
+      <Breadcrumbs items={breadcrumbItems} />
+      
+      <h1>Blog</h1>
+      <p>Latest insights on SEO, product development, and business growth.</p>
+      
+      <h2>Recent Posts</h2>
+      <section aria-label="Blog posts">
+        {sortedPosts.map(post => (
+          <Card
+            title={post.data.title}
+            description={post.data.description}
+            href={`/blog/${post.slug}`}
+            date={post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            category={post.data.section}
+          />
+        ))}
+      </section>
+    </main>
+    
+    <footer>
+      <p>&copy; 2024 Chudi Nnorukam. All rights reserved.</p>
+    </footer>
+</BaseLayout>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  main {
+    margin-bottom: 3rem;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  section[aria-label="Blog posts"] {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

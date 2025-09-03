@@ -1,0 +1,255 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/Header.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import fs from 'fs'
+import path from 'path'
+
+// Read social calendar CSV
+const csvPath = path.join(process.cwd(), '..', 'social_calendar.csv')
+const csvContent = fs.readFileSync(csvPath, 'utf-8')
+
+// Parse CSV data
+const lines = csvContent.trim().split('\n')
+const headers = lines[0].split(',')
+const socialItems = lines.slice(1).map(line => {
+  const values = line.split(',')
+  const item: any = {}
+  headers.forEach((header, index) => {
+    item[header.trim()] = values[index]?.trim() || ''
+  })
+  return item
+})
+
+// Group items by date
+const groupedItems = socialItems.reduce((acc, item) => {
+  const date = item.date
+  if (!acc[date]) {
+    acc[date] = []
+  }
+  acc[date].push(item)
+  return acc
+}, {} as Record<string, any[]>)
+
+// Sort dates
+const sortedDates = Object.keys(groupedItems).sort()
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Social Hub' }
+]
+
+// Format date for display
+function formatDate(dateString: string) {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })
+}
+
+// Get platform icon/color
+function getPlatformStyle(platform: string) {
+  const styles = {
+    LinkedIn: { color: '#0077B5', icon: '💼' },
+    Twitter: { color: '#1DA1F2', icon: '🐦' },
+    Facebook: { color: '#1877F2', icon: '📘' },
+    Instagram: { color: '#E4405F', icon: '📷' }
+  }
+  return styles[platform as keyof typeof styles] || { color: '#666', icon: '📱' }
+}
+---
+
+<BaseLayout
+  title="Social Hub - Chudi Nnorukam"
+  description="Upcoming social media content calendar and engagement tracking for SEO and product development insights."
+>
+  <Header currentPath="/social-hub" />
+  
+  <main>
+    <Breadcrumbs items={breadcrumbItems} />
+    
+    <h1>Social Hub</h1>
+    <p>Upcoming social media content calendar and engagement tracking.</p>
+    
+    <section aria-label="Social media calendar">
+      {sortedDates.map(date => (
+        <div class="date-group">
+          <h2>{formatDate(date)}</h2>
+          <div class="social-items">
+            {groupedItems[date].map(item => {
+              const platformStyle = getPlatformStyle(item.platform)
+              return (
+                <article class="social-item" role="article">
+                  <div class="platform-badge" style={`background-color: ${platformStyle.color}`}>
+                    <span class="platform-icon">{platformStyle.icon}</span>
+                    <span class="platform-name">{item.platform}</span>
+                  </div>
+                  
+                  <div class="content">
+                    <h3>{item.content}</h3>
+                    <p class="alt-text">Alt text: {item.alt_text}</p>
+                    
+                    <a 
+                      href={item.utm_link} 
+                      class="utm-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View ${item.content} on ${item.platform}`}
+                    >
+                      View Content →
+                    </a>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+    </section>
+  </main>
+  
+  <footer>
+    <p>&copy; 2024 Chudi Nnorukam. All rights reserved.</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  main {
+    margin-bottom: 3rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #444;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+  
+  .date-group {
+    margin-bottom: 2rem;
+  }
+  
+  .social-items {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .social-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .social-item:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  
+  .platform-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .platform-icon {
+    font-size: 1.1rem;
+  }
+  
+  .platform-name {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    color: #333;
+    line-height: 1.4;
+  }
+  
+  .alt-text {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #007bff;
+  }
+  
+  .utm-link {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  
+  .utm-link:hover {
+    background: #0056b3;
+    text-decoration: none;
+  }
+  
+  .utm-link:focus-visible {
+    outline: 2px solid #007bff;
+    background: #0056b3;
+  }
+  
+  footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    margin-top: 3rem;
+    color: #666;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .social-items {
+      grid-template-columns: 1fr;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

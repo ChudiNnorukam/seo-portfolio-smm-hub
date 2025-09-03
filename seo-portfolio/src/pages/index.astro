@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/Header.astro'
+---
+
+<BaseLayout
+  title="Chudi Nnorukam - SEO & Product Development Expert"
+  description="Expert SEO services and product development consulting. Helping businesses grow through strategic digital marketing and technical solutions."
+>
+		<Header currentPath="/" />
+		
+		<main>
+			<h1>Welcome to Chudi Nnorukam's Portfolio</h1>
+			<p>Expert SEO services and product development consulting to help your business grow.</p>
+			
+			<section>
+				<h2>Services</h2>
+				<ul>
+					<li>SEO Audits & Strategy</li>
+					<li>Content Marketing</li>
+					<li>Product Development Consulting</li>
+					<li>Technical SEO</li>
+				</ul>
+			</section>
+			
+			<nav aria-label="Quick links">
+				<h2>Quick Links</h2>
+				<ul>
+					<li><a href="/blog">Read My Blog</a></li>
+					<li><a href="/sitemap">Site Map</a></li>
+				</ul>
+			</nav>
+		</main>
+		
+		<footer>
+			<p>&copy; 2024 Chudi Nnorukam. All rights reserved.</p>
+		</footer>
+</BaseLayout>
+
+<style>
+	body {
+		font-family: system-ui, sans-serif;
+		line-height: 1.6;
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 20px;
+	}
+	
+	main {
+		margin-bottom: 3rem;
+	}
+	
+	h1 {
+		color: #333;
+		margin-bottom: 1rem;
+	}
+	
+	h2 {
+		color: #555;
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+	
+	ul {
+		list-style: none;
+		padding: 0;
+	}
+	
+	li {
+		margin-bottom: 0.5rem;
+	}
+	
+	a {
+		color: #0066cc;
+		text-decoration: none;
+	}
+	
+	a:hover {
+		text-decoration: underline;
+	}
+	
+	a:focus {
+		outline: 2px solid #0066cc;
+		outline-offset: 2px;
+	}
+	
+	footer {
+		border-top: 1px solid #eee;
+		padding-top: 1rem;
+		color: #666;
+		font-size: 0.9rem;
+	}
+</style>

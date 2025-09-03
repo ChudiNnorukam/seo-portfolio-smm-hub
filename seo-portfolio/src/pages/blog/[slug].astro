@@ -1,0 +1,238 @@
+---
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Header from '../../components/Header.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog')
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }))
+}
+
+type Props = CollectionEntry<'blog'>
+
+const post = Astro.props
+const { Content } = await post.render()
+
+const { title, description, pubDate, updatedDate, heroImage, tags, canonical, author, category, section, jsonLd } = post.data
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Blog', href: '/blog' },
+  { label: title }
+]
+
+// BlogPosting JSON-LD
+const blogPostingJsonLd = {
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": description,
+  "image": heroImage || "",
+  "author": {
+    "@type": "Person",
+    "name": author || "Chudi Nnorukam"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chudi Nnorukam",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://chudinnorukam.com/logo.png"
+    }
+  },
+  "datePublished": pubDate.toISOString(),
+  "dateModified": (updatedDate || pubDate).toISOString(),
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonical || Astro.url.toString()
+  },
+  "articleSection": section || category,
+  "keywords": tags?.join(", ") || ""
+}
+
+// Combine BlogPosting with any custom JSON-LD from frontmatter
+const finalJsonLd = jsonLd ? [blogPostingJsonLd, JSON.parse(jsonLd)] : blogPostingJsonLd
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical || Astro.url.toString()}
+  ogType="article"
+  ogImage={heroImage}
+  articlePublishedTime={pubDate.toISOString()}
+  articleModifiedTime={(updatedDate || pubDate).toISOString()}
+  articleAuthor={author || "Chudi Nnorukam"}
+  articleSection={section || category}
+  articleTags={tags}
+  jsonLd={finalJsonLd}
+>
+  <Header currentPath={Astro.url.pathname} />
+  
+  <main>
+    <Breadcrumbs items={breadcrumbItems} />
+    
+    <article>
+      <header>
+        <h1>{title}</h1>
+        <div class="meta">
+          <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          <span>by {author || "Chudi Nnorukam"}</span>
+          {section && <span>in {section}</span>}
+        </div>
+        {tags && tags.length > 0 && (
+          <div class="tags">
+            {tags.map(tag => <span class="tag">{tag}</span>)}
+          </div>
+        )}
+      </header>
+      
+      <div class="content">
+        <Content />
+      </div>
+    </article>
+  </main>
+  
+  <footer>
+    <p>&copy; 2024 Chudi Nnorukam. All rights reserved.</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  main {
+    margin-bottom: 3rem;
+  }
+  
+  article {
+    margin-bottom: 3rem;
+  }
+  
+  article header {
+    margin-bottom: 2rem;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  .meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .meta span {
+    margin-right: 1rem;
+  }
+  
+  .tags {
+    margin-bottom: 2rem;
+  }
+  
+  .tag {
+    display: inline-block;
+    background: #f0f0f0;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+  
+  .content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  
+  .content h2 {
+    color: #333;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+  }
+  
+  .content h3 {
+    color: #444;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+  }
+  
+  .content p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .content ul, .content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  
+  .content li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .content a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  
+  .content a:hover {
+    text-decoration: underline;
+  }
+  
+  .content a:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+  
+  .content blockquote {
+    border-left: 4px solid #0066cc;
+    padding-left: 1rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #555;
+  }
+  
+  .content code {
+    background: #f5f5f5;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+  }
+  
+  .content pre {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  
+  .content pre code {
+    background: none;
+    padding: 0;
+  }
+  
+  footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

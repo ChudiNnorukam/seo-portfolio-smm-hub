@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/Header.astro'
+
+const posts = await getCollection('blog')
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+---
+
+<BaseLayout
+  title="Sitemap - Chudi Nnorukam"
+  description="Complete sitemap of all blog posts and pages on Chudi Nnorukam's website."
+>
+    <Header currentPath="/sitemap" />
+    
+    <main>
+      <h1>Site Map</h1>
+      
+      <section>
+        <h2>Main Pages</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/sitemap.html">Sitemap</a></li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Blog Posts ({sortedPosts.length} total)</h2>
+        <ul>
+          {sortedPosts.map(post => (
+            <li>
+              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              <span class="meta">
+                - {post.data.pubDate.toLocaleDateString()}
+                {post.data.category && ` - ${post.data.category}`}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+    
+    <footer>
+      <p>&copy; 2024 Chudi Nnorukam. All rights reserved.</p>
+    </footer>
+</BaseLayout>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    margin-bottom: 2rem;
+  }
+  
+  nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  nav a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  h2 {
+    color: #555;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 0.5rem;
+  }
+  
+  li a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  li a:hover {
+    text-decoration: underline;
+  }
+  
+  .meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+  
+  footer {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    margin-top: 3rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

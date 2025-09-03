@@ -1,0 +1,75 @@
+---
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/social-hub', label: 'Social Hub' },
+  { href: '/sitemap', label: 'Sitemap' }
+];
+---
+
+<header>
+  <nav role="navigation" aria-label="Main navigation">
+    <ul>
+      {navItems.map(item => (
+        <li>
+          <a 
+            href={item.href}
+            aria-current={currentPath === item.href ? 'page' : undefined}
+            class={currentPath === item.href ? 'active' : ''}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    margin-bottom: 2rem;
+  }
+  
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav a {
+    color: #0066cc;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  nav a:hover {
+    background-color: #f0f8ff;
+    text-decoration: underline;
+  }
+  
+  nav a:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+    background-color: #f0f8ff;
+  }
+  
+  nav a.active {
+    background-color: #0066cc;
+    color: white;
+    font-weight: 500;
+  }
+  
+  nav a.active:focus {
+    outline-color: white;
+  }
+</style>
