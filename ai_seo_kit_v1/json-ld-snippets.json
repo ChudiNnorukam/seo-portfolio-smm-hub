@@ -1,0 +1,49 @@
+{
+  "Person": {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "{{Your Name}}",
+    "url": "{{Your Website}}",
+    "sameAs": [
+      "https://www.linkedin.com/in/{{Handle}}/",
+      "https://twitter.com/{{Handle}}"
+    ]
+  },
+  "BlogPosting": {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{Post Title}}",
+    "description": "{{Post Description}}",
+    "datePublished": "{{YYYY-MM-DD}}",
+    "author": {
+      "@type": "Person",
+      "name": "{{Your Name}}"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "{{Canonical URL}}"
+    }
+  },
+  "FAQPage": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "{{FAQ Question 1}}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{Answer 1}}"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "{{FAQ Question 2}}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{Answer 2}}"
+        }
+      }
+    ]
+  }
+}

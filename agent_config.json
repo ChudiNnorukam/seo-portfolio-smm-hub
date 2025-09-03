@@ -1,0 +1,11 @@
+{
+    "allowed_paths": ["seo-portfolio/**", "scripts/**", ".cursor/**", "prompts/**"],
+    "max_diff_lines": 400,
+    "autopilot_threshold_lines": 200,
+    "perf_budget": {
+      "lcp": 2500,
+      "cls": 0.1,
+      "inp": 200
+    }
+  }
+  
